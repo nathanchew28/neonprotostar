@@ -9,10 +9,8 @@
     <meta property="og:description" content="Immersive audio visualizer, instrument tuner, live key/chord detector, and free open-source song identification.">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="icon.png">
-
-    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" href="/icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -36,6 +34,7 @@
             font-family: var(--font-main);
             overflow: hidden;
         }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -361,7 +360,6 @@
         </div>
     </div>
 
-    <script type="module" src="/src/vexflow-bridge.ts"></script>
-    <script defer src="app.js"></script>
+    <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

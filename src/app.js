@@ -2942,17 +2942,15 @@ class UIController {
     }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+const initNeonProtostar = () => {
     new UIController();
-});
+};
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker
-            .register('/sw.js', { updateViaCache: 'none' })
-            .then((reg) => reg.update())
-            .catch((error) => {
-                console.warn('ServiceWorker registration failed:', error);
-            });
-    });
+if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', initNeonProtostar, { once: true });
+} else {
+    initNeonProtostar();
 }
+
+export {};
+
