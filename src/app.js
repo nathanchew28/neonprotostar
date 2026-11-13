@@ -866,7 +866,6 @@ class Tuner {
         this.needle = document.getElementById('needle');
         this.noteName = document.getElementById('note-name');
         this.instructionText = document.getElementById('tuner-instruction-text');
-        this.closeTunerBtn = document.getElementById('close-tuner');
         this.tunerMainBtn = document.getElementById('tuner-main-btn');
 
         this.instrumentButtons = document.querySelectorAll('[data-tuner-instrument]');
@@ -886,7 +885,6 @@ class Tuner {
         this.bindChordControls();
         this.syncChordUI();
 
-        this.closeTunerBtn.addEventListener('click', () => this.deactivate());
         if (this.tunerMainBtn) {
             this.tunerMainBtn.addEventListener('click', () => this.deactivate());
         }
@@ -2327,7 +2325,6 @@ class UIController {
         this.startBtn = document.getElementById('start-btn');
         this.identifyBtn = document.getElementById('identify-btn');
         this.backToModesBtn = document.getElementById('back-to-modes-btn');
-        this.dockMainBtn = document.getElementById('dock-main-btn');
         this.returnStartBtn = document.getElementById('return-start-btn');
         this.retryMicBtn = document.getElementById('retry-mic-btn');
         this.tunerFeatureBtn = document.getElementById('tuner-btn');
@@ -2423,9 +2420,6 @@ class UIController {
         }
         if (this.backToModesBtn) {
             this.backToModesBtn.addEventListener('click', () => this.returnToModes());
-        }
-        if (this.dockMainBtn) {
-            this.dockMainBtn.addEventListener('click', () => this.returnToModes());
         }
         if (this.returnStartBtn) {
             this.returnStartBtn.addEventListener('click', () => this.returnToStartScreen());

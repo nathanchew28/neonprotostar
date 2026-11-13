@@ -71,7 +71,8 @@ canvas#visualizer {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.78rem;
+    min-height: 36px;
+    font-size: 0.76rem;
     font-weight: 600;
     letter-spacing: 1.5px;
     color: var(--primary-neon);
@@ -120,14 +121,15 @@ canvas#visualizer {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
+    min-height: 36px;
     background: rgba(10, 14, 20, 0.65);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(12px);
     color: #e2e8f0;
-    padding: 8px 16px;
+    padding: 7px 15px;
     border-radius: 999px;
     font-family: inherit;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 600;
     letter-spacing: 0.8px;
     text-transform: uppercase;
@@ -390,72 +392,76 @@ h1 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.65rem;
     pointer-events: none;
-    padding: 0 1.5rem;
+    padding: 0;
 }
 
 .harmony-pill {
     display: inline-flex;
     align-items: center;
-    gap: 1.1rem;
-    background: rgba(5, 10, 18, 0.65);
-    border: 1px solid rgba(0, 243, 255, 0.25);
+    gap: 0.75rem;
+    max-width: min(36vmin, 200px);
+    background: rgba(5, 10, 18, 0.68);
+    border: 1px solid rgba(0, 243, 255, 0.26);
     backdrop-filter: blur(12px);
-    border-radius: 16px;
-    padding: 10px 20px;
+    border-radius: 14px;
+    padding: 7px 14px;
 }
 
 .harmony-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 72px;
+    min-width: 58px;
 }
 
 .harmony-divider {
     width: 1px;
-    height: 28px;
-    background: rgba(255, 255, 255, 0.12);
+    height: 24px;
+    background: rgba(255, 255, 255, 0.14);
 }
 
 .harmony-label {
-    font-size: 0.65rem;
-    letter-spacing: 1.8px;
+    font-size: 0.6rem;
+    letter-spacing: 1.4px;
     color: #94a3b8;
     margin-bottom: 2px;
 }
 
 .harmony-value {
-    font-size: 1rem;
+    font-size: 0.92rem;
     font-weight: 700;
     color: var(--primary-neon);
     text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
 }
 
 .idle-hint {
-    font-size: 0.8rem;
-    letter-spacing: 3px;
-    color: rgba(255, 255, 255, 0.55);
+    max-width: min(35vmin, 180px);
+    font-size: clamp(0.6rem, 1.35vmin, 0.72rem);
+    letter-spacing: 1.5px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.62);
     text-align: center;
 }
 
 #focus-message {
-    font-size: 1.2rem;
+    max-width: min(35vmin, 185px);
+    font-size: 0.9rem;
     font-weight: 600;
-    letter-spacing: 3px;
+    letter-spacing: 2.2px;
     color: #fff;
     text-shadow: 0 0 16px var(--primary-neon);
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.65);
     border: 1px solid rgba(0, 243, 255, 0.4);
-    padding: 10px 22px;
+    padding: 8px 18px;
     border-radius: 999px;
     backdrop-filter: blur(10px);
 }
 
 .dock {
     position: absolute;
-    bottom: 2rem;
+    bottom: 1.75rem;
     width: 100%;
     padding: 0 1.5rem;
     display: flex;
@@ -863,7 +869,7 @@ h1 {
 }
 
 .current-note {
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     font-size: 0.92rem;
     color: #e2e8f0;
 }
