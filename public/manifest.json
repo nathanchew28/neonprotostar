@@ -1,0 +1,17 @@
+{
+    "name": "Neon Protostar: Universal Music Engine",
+    "short_name": "Protostar",
+    "description": "Multi-language music recognition and learning engine.",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#050505",
+    "theme_color": "#00f3ff",
+    "icons": [
+        {
+            "src": "icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

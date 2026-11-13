@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Protostar</title>
+    <meta name="description" content="Immersive audio visualizer, instrument tuner, live key/chord detector, and free open-source song identification.">
+    <meta property="og:title" content="Neon Protostar">
+    <meta property="og:description" content="Immersive audio visualizer, instrument tuner, live key/chord detector, and free open-source song identification.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #050505;
+            --primary-neon: #00f3ff;
+            --secondary-neon: #ff0055;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --accent-neon: #00f3ff;
+            --font-main: 'Outfit', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            color: white;
+            font-family: var(--font-main);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Visualizer Canvas -->
+        <canvas id="visualizer"></canvas>
+
+        <!-- Start Overlay -->
+        <div id="start-overlay" class="overlay active">
+            <div class="content">
+                <div class="hero-badge">OPEN-SOURCE AUDIO ENGINE</div>
+                <h1>NEON PROTOSTAR</h1>
+                <p>Audio Visualizer, Tuner, Live Key/Chords &amp; Free Song Recognition</p>
+                <button id="start-btn" class="neon-btn neon-btn-primary" type="button">INITIALIZE SYSTEM</button>
+            </div>
+        </div>
+
+        <!-- Main Screen / Mode Hub -->
+        <div id="feature-selection" class="hidden">
+            <div class="header">
+                <span class="status-indicator" data-mic-status>MIC ACTIVE</span>
+                <div class="header-actions">
+                    <button id="retry-mic-btn" class="nav-btn hidden" type="button">Enable Mic</button>
+                    <button id="return-start-btn" class="nav-btn" type="button">&#8592; Start Screen</button>
+                </div>
+            </div>
+
+            <div class="hub-content">
+                <div class="hub-heading">
+                    <h2>NEON PROTOSTAR</h2>
+                    <p>Choose an audio mode to begin</p>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" width="48" height="48">
+                                <path fill="currentColor" d="M12 3a9 9 0 0 0-9 9c0 3.56 2.07 6.64 5.07 8.1l.86-1.8A7 7 0 1 1 19 12c0 2.79-1.64 5.2-4 6.32l.86 1.8A9 9 0 0 0 12 3zm0 4a5 5 0 0 0-5 5c0 1.98 1.15 3.69 2.82 4.5l.86-1.8A3 3 0 1 1 15 12c0 1.2-.7 2.23-1.72 2.7l.86 1.8A5 5 0 0 0 12 7zm0 3.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
+                            </svg>
+                        </div>
+                        <h3>Tuner &amp; Harmony</h3>
+                        <p>Multi-octave instrument tuner with live browser-based key and chord detection</p>
+                        <button class="feature-btn" id="tuner-btn" type="button">Open Tuner</button>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" width="48" height="48">
+                                <path fill="currentColor" d="M12 3v9.28a4.39 4.39 0 0 0-1.5-.28 4.5 4.5 0 1 0 4.5 4.5V6h3V3h-6z" />
+                            </svg>
+                        </div>
+                        <h3>Song Identification</h3>
+                        <p>Identify songs free with open-source fingerprinting—no API keys required</p>
+                        <button class="feature-btn" id="identify-feature-btn" type="button">Find Song</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Song Identification / Main Visualizer Screen -->
+        <div id="interface" class="hidden">
+            <div class="header">
+                <span class="status-indicator" data-mic-status>MIC ACTIVE</span>
+                <div class="header-actions">
+                    <button id="viz-settings-btn" class="nav-btn" type="button" aria-expanded="false" aria-controls="visualizer-settings-panel">
+                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                            <path fill="currentColor" d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.3.59.22l2.39-.96c.49.37 1.03.7 1.62.94l.36 2.54c.05.24.26.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.57 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/>
+                        </svg>
+                        <span>Visuals</span>
+                    </button>
+                    <button id="back-to-modes-btn" class="nav-btn nav-btn-accent" type="button">&#8592; Main Screen</button>
+                </div>
+            </div>
+
+            <!-- Visualizer Settings Panel -->
+            <aside id="visualizer-settings-panel" class="settings-panel hidden" aria-label="Visualizer settings">
+                <div class="settings-header">
+                    <h3>Visualizer Settings</h3>
+                    <button id="close-viz-settings" class="settings-close-btn" type="button" aria-label="Close settings">&times;</button>
+                </div>
+
+                <div class="settings-group">
+                    <span class="settings-label">Waveform Style</span>
+                    <div class="style-grid" role="group" aria-label="Waveform Style">
+                        <button type="button" class="style-option active" data-viz-style="circular">Circular</button>
+                        <button type="button" class="style-option" data-viz-style="bars">Bars</button>
+                        <button type="button" class="style-option" data-viz-style="particles">Particles</button>
+                        <button type="button" class="style-option" data-viz-style="wave">Wave</button>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <span class="settings-label">Color Theme</span>
+                    <div class="palette-row" role="group" aria-label="Color Theme">
+                        <button type="button" class="palette-option active" data-viz-palette="cyan">Cyan</button>
+                        <button type="button" class="palette-option" data-viz-palette="pulse">Pulse</button>
+                        <button type="button" class="palette-option" data-viz-palette="spectrum">Spectrum</button>
+                        <button type="button" class="palette-option" data-viz-palette="emerald">Emerald</button>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <div class="settings-label-row">
+                        <label class="settings-label" for="viz-sensitivity">Sensitivity</label>
+                        <span id="viz-sensitivity-value" class="settings-value">1.0x</span>
+                    </div>
+                    <input id="viz-sensitivity" class="settings-slider" type="range" min="0.6" max="2.0" step="0.1" value="1.0" />
+                </div>
+            </aside>
+
+            <div class="center-focus">
+                <div class="harmony-pill">
+                    <div class="harmony-item">
+                        <span class="harmony-label">LIVE KEY</span>
+                        <span class="harmony-value" id="song-live-key">--</span>
+                    </div>
+                    <div class="harmony-divider"></div>
+                    <div class="harmony-item">
+                        <span class="harmony-label">LIVE CHORD</span>
+                        <span class="harmony-value" id="song-live-chord">--</span>
+                    </div>
+                </div>
+                <div id="idle-hint" class="idle-hint">TAP IDENTIFY SONG TO LISTEN</div>
+                <div id="focus-message" class="hidden">LISTENING...</div>
+            </div>
+
+            <div class="dock">
+                <button id="identify-btn" class="dock-btn dock-btn-primary" type="button">
+                    <svg viewBox="0 0 24 24" width="22" height="22">
+                        <path fill="currentColor" d="M12 3v9.28a4.39 4.39 0 0 0-1.5-.28 4.5 4.5 0 1 0 4.5 4.5V6h3V3h-6z" />
+                    </svg>
+                    <span>Identify Song</span>
+                </button>
+                <button id="dock-main-btn" class="dock-btn" type="button">
+                    <span>Main Screen</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Tuner Interface -->
+        <div id="tuner-interface" class="hidden">
+            <div class="header">
+                <span class="status-indicator" data-mic-status>MIC ACTIVE</span>
+                <div class="header-actions">
+                    <button id="tuner-main-btn" class="nav-btn nav-btn-accent" type="button">&#8592; Main Screen</button>
+                </div>
+            </div>
+
+            <div class="tuner-container glass-panel">
+                <h2 class="neon-text">Instrument Tuner</h2>
+                <div id="tuner-status" class="tuner-status">PLAY A NOTE</div>
+
+                <div class="chord-intent-box" aria-label="Instrument and intended chord selection">
+                    <div class="chord-intent-header">
+                        <span class="chord-intent-label">INSTRUMENT &amp; CHORD</span>
+                        <span id="chord-match-badge" class="chord-match-badge">CHROMATIC</span>
+                    </div>
+                    <div class="instrument-tabs" role="group" aria-label="Tuner instrument">
+                        <button type="button" class="instrument-tab active" data-tuner-instrument="chromatic">Chromatic</button>
+                        <button type="button" class="instrument-tab" data-tuner-instrument="guitar">Guitar</button>
+                        <button type="button" class="instrument-tab" data-tuner-instrument="ukulele">Ukulele</button>
+                    </div>
+                    <div class="chord-select-row">
+                        <select id="chord-root-select" class="tuner-select" aria-label="Chord root or open strings">
+                            <option value="chromatic">Open Strings / Auto</option>
+                            <option value="C">C</option>
+                            <option value="C#">C# / Db</option>
+                            <option value="D">D</option>
+                            <option value="D#">D# / Eb</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="F#">F# / Gb</option>
+                            <option value="G">G</option>
+                            <option value="G#">G# / Ab</option>
+                            <option value="A">A</option>
+                            <option value="A#">A# / Bb</option>
+                            <option value="B">B</option>
+                        </select>
+                        <select id="chord-quality-select" class="tuner-select hidden" aria-label="Chord type">
+                            <option value="maj">Major</option>
+                            <option value="m">Minor (m)</option>
+                            <option value="7">Dom 7 (7)</option>
+                            <option value="maj7">Maj 7 (maj7)</option>
+                            <option value="m7">Min 7 (m7)</option>
+                            <option value="sus4">Sus 4 (sus4)</option>
+                            <option value="5">Power (5)</option>
+                        </select>
+                    </div>
+                    <div id="chord-tone-pills" class="chord-tone-pills hidden" role="group" aria-label="Target strings or chord notes"></div>
+                    <div id="chord-diagram-box" class="chord-diagram-box hidden">
+                        <div class="chord-diagram-header">
+                            <span id="chord-diagram-title" class="chord-diagram-title">Fingering</span>
+                            <div class="voicing-nav">
+                                <button id="voicing-prev-btn" class="voicing-btn" type="button" aria-label="Previous voicing">&#8249;</button>
+                                <span id="voicing-counter" class="voicing-counter">1/1</span>
+                                <button id="voicing-next-btn" class="voicing-btn" type="button" aria-label="Next voicing">&#8250;</button>
+                            </div>
+                        </div>
+                        <div id="chord-diagram-svg" class="chord-diagram-svg"></div>
+                    </div>
+                </div>
+
+                <div class="tuner-display">
+                    <div id="note-display" class="note-display">--</div>
+                    <div class="tuner-metrics">
+                        <span id="frequency-display" class="frequency-display">0.0 Hz</span>
+                        <span class="metric-sep">&bull;</span>
+                        <span id="cents-display" class="cents-display">0.0 cents</span>
+                        <span class="metric-sep">&bull;</span>
+                        <span id="clarity-display" class="clarity-display">--%</span>
+                    </div>
+                </div>
+                <div class="tuner-gauge">
+                    <div class="gauge-center-line"></div>
+                    <div class="gauge-sweet-zone"></div>
+                    <div id="needle" class="needle"></div>
+                    <div class="gauge-markers">
+                        <span class="marker left">-50</span>
+                        <span class="marker center">0</span>
+                        <span class="marker right">+50</span>
+                    </div>
+                </div>
+                <div class="harmony-strip">
+                    <div class="harmony-strip-cell">
+                        <span class="harmony-label">KEY</span>
+                        <span class="harmony-value" id="tuner-live-key">--</span>
+                    </div>
+                    <div class="harmony-strip-cell">
+                        <span class="harmony-label">LIVE CHORD</span>
+                        <span class="harmony-value" id="tuner-live-chord">--</span>
+                    </div>
+                </div>
+                <div class="tuner-instructions">
+                    <p id="tuner-instruction-text">Play your instrument near the microphone to tune</p>
+                    <div class="current-note">
+                        <span id="current-note">Target Note:</span>
+                        <span id="note-name">--</span>
+                    </div>
+                </div>
+                <button id="close-tuner" class="neon-btn full-width" type="button">&#8592; Back to Main Screen</button>
+            </div>
+        </div>
+
+        <!-- Result Modal -->
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content glass-panel" id="result-content">
+                <button id="close-modal" class="close-btn" type="button" aria-label="Close modal">&times;</button>
+                <h2 class="neon-text glow">Song Identified</h2>
+                <img id="song-cover" class="song-cover hidden" alt="Album cover art" />
+                <div class="song-info">
+                    <h3 id="song-title">Title</h3>
+                    <p id="artist-name">Artist</p>
+                    <p class="release-date">Released: <span id="release-date">Date</span></p>
+                    <div class="musical-details" id="musical-details">
+                        <div class="detail-item">
+                            <span class="detail-label">KEY (LIVE)</span>
+                            <span class="detail-value" id="song-key">--</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">CHORDS (LIVE)</span>
+                            <span class="detail-value" id="song-chords">--</span>
+                        </div>
+                    </div>
+                    <p id="song-description" class="song-description">...</p>
+                </div>
+                <div class="modal-actions">
+                    <div class="modal-links-row">
+                        <a id="youtube-link-btn" class="action-btn action-btn-youtube hidden" target="_blank" rel="noopener noreferrer">
+                            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                                <path fill="currentColor" d="M23.5 6.2a3.01 3.01 0 0 0-2.12-2.13C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.52A3.01 3.01 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3.01 3.01 0 0 0 2.12 2.13c1.88.52 9.38.52 9.38.52s7.5 0 9.38-.52a3.01 3.01 0 0 0 2.12-2.13A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/>
+                            </svg>
+                            <span id="youtube-link-label">Watch on YouTube</span>
+                        </a>
+                        <button id="sheet-music-btn" class="action-btn" type="button" aria-expanded="false" aria-controls="sheet-music-panel">Free Sheet Music</button>
+                    </div>
+
+                    <div id="sheet-music-panel" class="sheet-music-panel hidden">
+                        <div class="sheet-section">
+                            <div class="sheet-section-header">
+                                <span class="sheet-section-title">Free Live Lead Sheet</span>
+                                <div class="sheet-header-actions">
+                                    <span class="sheet-badge">VEXFLOW + MUSICXML</span>
+                                    <button id="toggle-musicxml-btn" class="mini-pill-btn" type="button" aria-expanded="false" aria-controls="musicxml-input-box">Import XML</button>
+                                </div>
+                            </div>
+                            <div id="lead-sheet-staff" class="lead-sheet-staff"></div>
+                            <div id="lead-sheet-notes" class="lead-sheet-notes"></div>
+                            <div id="musicxml-input-box" class="musicxml-input-box hidden">
+                                <div class="musicxml-toolbar">
+                                    <button id="load-sample-xml-btn" class="mini-pill-btn" type="button">Load Sample</button>
+                                    <label class="mini-pill-btn" for="musicxml-file-input">Upload .xml/.musicxml</label>
+                                    <input id="musicxml-file-input" type="file" accept=".xml,.musicxml,text/xml,application/xml" class="hidden" />
+                                    <button id="reset-live-xml-btn" class="mini-pill-btn" type="button">Reset Live</button>
+                                </div>
+                                <textarea id="musicxml-textarea" class="musicxml-textarea" rows="4" spellcheck="false" placeholder="Paste raw MusicXML (&lt;score-partwise&gt;...) here and click Render MusicXML..."></textarea>
+                                <button id="render-musicxml-btn" class="mini-pill-btn mini-pill-btn-primary" type="button">Render MusicXML</button>
+                            </div>
+                        </div>
+
+                        <div class="sheet-section">
+                            <div class="sheet-section-header">
+                                <span class="sheet-section-title">IMSLP Public-Domain Scores</span>
+                                <span class="sheet-badge">FREE PDF</span>
+                            </div>
+                            <div id="imslp-results" class="imslp-results">Click Free Sheet Music to search IMSLP...</div>
+                        </div>
+
+                        <div class="sheet-section">
+                            <div class="sheet-section-header">
+                                <span class="sheet-section-title">Open Sheet Music Libraries</span>
+                                <span class="sheet-badge">100% FREE</span>
+                            </div>
+                            <div id="free-sheet-sources" class="free-source-grid"></div>
+                        </div>
+                    </div>
+
+                    <div class="modal-action-row">
+                        <button id="close-modal-btn" class="neon-btn" type="button">Close</button>
+                        <button id="result-main-btn" class="neon-btn neon-btn-primary" type="button">&#8592; Main Screen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/src/vexflow-bridge.ts"></script>
+    <script defer src="app.js"></script>
+</body>
+</html>
